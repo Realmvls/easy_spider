@@ -1,11 +1,9 @@
 #coding=utf-8
-import urllib
-
-def getHtml(url):
-    page = urllib.urlopen(url)
-    html = page.read()
-    return html
-
-html = getHtml("http://www.hao123.com")
-
-print html
+import requests
+import re
+from bs4 import BeautifulSoup
+r = requests.get('http://www.netbian.com/s/chaogaoqing/')
+r.text
+print r.status_code
+soup = BeautifulSoup(r.text,"html.parser")
+print soup.find_all("li")
