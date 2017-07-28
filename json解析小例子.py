@@ -18,4 +18,4 @@ print(jsonObj.get("arrayOfNums"))
 print(jsonObj.get("arrayOfNums")[1])
 print(jsonObj.get("arrayOfNums")[1].get("number")+
       jsonObj.get("arrayOfNums")[2].get("number"))
-print(jsonObj.get("arrayOfNums")[2].get("fruit"))
+print(jsonObj.get("arrayOfFruits")[2].get("fruit"))
