@@ -10,3 +10,6 @@ cur.execute("select * from pages ")
 print(cur.fetchone())
 cur.close()
 conn.close()
+
+#参考：http://blog.csdn.net/robertchenguangzhi/article/details/49174523   连接
+       #http://www.cnblogs.com/hateislove214/archive/2010/11/05/1869889.html   mysql基本指令
