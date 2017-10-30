@@ -1,0 +1,110 @@
+
+"""
+1. 连接Mongo获取数据
+2. 解析数据获取信息
+3. 将信息存入MySQL
+"""
+
+from handler_51job_job import _51JonHandler
+from pymongo import MongoClient
+import pymysql
+from bs4 import BeautifulSoup
+import json
+
+job_html_list = []    #所有job的html列表
+bs_html_list = []   #job的所有html 转换为BeautifulSoup对象
+job_url = []
+com_html_list = []  #company信息的html列表
+bs_com = []        #company所有html 转换为BeautifulSoup对象
+com_url = []
+def run():
+    client = MongoClient('mongodb://root:pheiSeefieChoh5ahtii@101.132.74.52:27017/admin')
+    db = client.resultdb                  #resultdb为数据库的名字
+    # print(db.collection_names())        #查询result数据库中的所有collection
+    collection = db['51job_job'].find()   #把collection定位到51job_job上，然后执行查询。 ps：一般就用.查询和统计 find()和count()
+    # mess = collection[:3]                 #collection的操作可以想象成金子塔之类的
+    # for i in mess:
+    #     print (i.keys())                  #此处为打印51job_job上的所有状态，结果在result中
+    #     result = json.loads(i["result"])  #此处查看result状态并用json解析下
+    #     print (result.keys())             #result也是类似字典的格式，看它的key
+    #     print (result["url"])             #看result的value
+    #     print (result["title"])
+    collection2 = db['51job_company'].find() #把collection定位到51job_company上，然后执行查询。
+    mess = collection[:30]
+    mess2 = collection2[:30]
+    # mess = collection
+    # mess2 = collection2
+    #获取job的
+    for i in mess:
+        result = json.loads(i["result"])     #json.dumps : dict转成str,   json.loads:str转成dict
+        job_html_list.append(result["html"])
+        job_url.append(result["url"])
+    # print(len(job_html_list))
+    # print(len(job_url))
+    for j in job_html_list:
+        html_obj = BeautifulSoup(j,'html.parser')
+        bs_html_list.append(html_obj)
+    # print(len(bs_html_list))
+    #获取company的
+    for y in mess2:
+        result2 =json.loads(y["result"])
+        com_html_list.append(result2["html"])
+        com_url.append(result2["url"])
+    for u in com_html_list:
+        com_html_obj = BeautifulSoup(u,'html.parser')
+        bs_com.append(com_html_obj)
+
+    # print(len(job_html_list),len(bs_html_list),len(job_url),len(com_html_list),len(bs_com),len(com_url))
+    company_data = []
+    job_data = []
+    for t in range(len(job_html_list)):
+        job_data.append(_51JonHandler().convert_job(job_url[t], bs_html_list[t]))
+    for r in range(len(com_html_list)):
+        company_data.append(_51JonHandler().convert_company(com_url[r], bs_com[r]))
+
+
+#写入本地数据库
+    conn = pymysql.connect(host='127.0.0.1', port=3306, user='root', password='', db='51job', charset='utf8mb4',
+                           cursorclass=pymysql.cursors.DictCursor)
+    cur = conn.cursor()
+    # 公司
+    cnt=0
+    for data in company_data:
+
+        cur.execute("insert into tcompany(companyLogo,companyName,descDescribe,infoCompanySize,infoIndustry,infoCity,shortName,companyUrl,companyPicture) values('%s','%s', '%s', '%s', '%s', '%s','%s','%s','%s')" %
+              (data['logo'], data['name'], data['description'], data['size'], data['industry'], data['address'],data['shortName'],data['companyUrl'],data['companyPicture']))
+        print('正在导入{}条公司数据'.format(cnt))
+        cnt+=1
+   # 职位
+    num = 0
+    for data in job_data:
+
+        SQL = "insert into tjob(experience,education,publishTime,salary,workAdvantage,workDescription,label,contact,people,location,jobName) \
+        values ('''%s''','''%s''','''%s''','''%s''','''%s''','''%s''','''%s''','''%s''','''%s''','''%s''','''%s''')" % (
+        data['workage'], data['education'], data['published_at'], data['salary'], data['labels'], data['description'],
+        data['category_cd'], data['address'], data['people'], data['city'], data['jobName'])
+
+
+        cur.execute(SQL)
+        print('正在导入第{}条职位数据'.format(num))
+        num += 1
+    conn.commit()
+    cur.close()
+    conn.close()
+
+#重新构建代码体系
+
+def run1():
+    #公司信息
+    client = MongoClient('mongodb://root:pheiSeefieChoh5ahtii@101.132.74.52:27017/admin')
+    db = client.resultdb
+    company_col = db['51job_company'].find()
+    for data in company_col.limit(10):
+        # 存Beautifulsoup对象
+        # 用Handler类的方法解析
+        # To MySQL
+        pass
+    #职位信息
+
+if __name__ == "__main__":
+    run1()
