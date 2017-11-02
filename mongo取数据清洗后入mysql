@@ -22,6 +22,12 @@ def run():
     db = client.resultdb                  #resultdb为数据库的名字
     # print(db.collection_names())        #查询result数据库中的所有collection
     collection = db['51job_job'].find()   #把collection定位到51job_job上，然后执行查询。 ps：一般就用.查询和统计 find()和count()
+    
+    #collection = db['itjuzi_com'].find()[0]   #url如果不在result中可以用这种方法查看url，collection为一个字典
+    #collection['url']   
+    
+    
+    
     # mess = collection[:3]                 #collection的操作可以想象成金子塔之类的
     # for i in mess:
     #     print (i.keys())                  #此处为打印51job_job上的所有状态，结果在result中
