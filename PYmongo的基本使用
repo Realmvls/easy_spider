@@ -109,7 +109,8 @@
 
 Robomongo中查询和用python的PYmongo查询不一样
 
-可视化的Robomongo中倒叙查询：db.getCollection('51job_job').find({}).limit(10).sort({_id:-1})
+可视化的Robomongo中实现倒序查询：db.getCollection('51job_job').find({}).limit(10).sort({_id:-1})
 
- 
+
+ python的pymongo实现倒序查询：r = db['51job_job'].find({}).sort('_id', pymongo.DESCENDING)[0] 
 
