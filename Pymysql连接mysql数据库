@@ -1,0 +1,42 @@
+#!/usr/bin/Python
+# -*- coding: utf-8 -*-
+import pymysql
+conn = pymysql.connect(host='127.0.0.1',port = 3306,user='root',passwd=None,db='mysql')
+
+cur = conn.cursor()
+cur.execute("USE scraping")
+
+cur.execute("select * from pages ")
+print(cur.fetchone())
+cur.close()
+conn.close()
+
+#参考：http://blog.csdn.net/robertchenguangzhi/article/details/49174523   连接
+       #http://www.cnblogs.com/hateislove214/archive/2010/11/05/1869889.html   mysql基本指令
+  #  pymysql  连接mysql数据库读数据
+def dispatcher(self):
+ conn = pymysql.connect(host=self.mysql_url, charset='UTF8',
+                        port=3306, user='xxxx', passwd='xxxxxxxxxxx', db='t1')
+ cursor = conn.cursor(cursor=pymysql.cursors.SSCursor)
+ # 跳过2个取8个
+       # sql = 'select url,html from company limit 2,8'
+ sql = 'select url,html from company'
+ cursor.execute(sql)
+ for data in cursor:
+     try:
+         if getattr(storer, 'just_data', False) is True:
+             prepared_data = data
+         else:
+             url = data[0]
+             com_html = data[1]
+             if com_html is None:
+                 continue
+             # 将html转化为BeautifulSoup对象
+             obj = BeautifulSoup(com_html, 'html.parser', from_encoding='utf-8')
+
+     except Exception as e:
+         traceback.print_exc()
+
+ cursor.close()
+ conn.close()
+
