@@ -18,7 +18,7 @@ com_html_list = []  #company信息的html列表
 bs_com = []        #company所有html 转换为BeautifulSoup对象
 com_url = []
 def run():
-    client = MongoClient('mongodb://root:pheiSeefieChoh5ahtii@101.132.74.52:27017/admin')
+    client = MongoClient('mongodb://root:xxxxxxx@1xxxxxxx:xxxxx/admin')
     db = client.resultdb                  #resultdb为数据库的名字
     # print(db.collection_names())        #查询result数据库中的所有collection
     collection = db['51job_job'].find()   #把collection定位到51job_job上，然后执行查询。 ps：一般就用.查询和统计 find()和count()
